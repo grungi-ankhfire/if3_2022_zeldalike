@@ -12,10 +12,13 @@ public class Character : MonoBehaviour
     private InputAction moveAction;
     private PlayerInputActions actions;
 
-    private Rigidbody rb;
+    private CharacterController controller;
 
-    public Chest chest;
+    public Interactable currentInteractable;
+
     public TextMeshProUGUI rubyText;
+
+    private float verticalSpeed = 0;
 
     private int _rupees;
     public int rupees
@@ -32,25 +35,34 @@ public class Character : MonoBehaviour
         actions = new PlayerInputActions();
         moveAction = actions.Player.Move;
         moveAction.Enable();
-        rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
     }
 
-    void FixedUpdate() {
+    void Update() {
         Vector2 moveDirection = -moveAction.ReadValue<Vector2>();
 
-        Vector2 movement = moveDirection * moveSpeed * Time.fixedDeltaTime;
-        Vector3 translation = new Vector3(movement.x, 0, movement.y);
-        rb.MovePosition(transform.position + translation);
+        if (!controller.isGrounded) {
+            verticalSpeed += -9.81f * Time.deltaTime;
+        } else {
+            verticalSpeed = 0f;
+        }
+        
+        Vector3 verticalMovement = new Vector3(0, verticalSpeed * Time.deltaTime, 0);
+
+        Vector2 movement = moveDirection * moveSpeed * Time.deltaTime;
+        Vector3 horizontalMovement = new Vector3(movement.x, 0, movement.y);
+        
+        controller.Move(horizontalMovement + verticalMovement);
 
         if (moveDirection != Vector2.zero) {
-            transform.forward = translation;
+            transform.forward = horizontalMovement;
         }
 
     }
 
     public void Activate(InputAction.CallbackContext context) {
-        if (context.performed && chest != null) {
-            chest.Open();
+        if (context.performed && currentInteractable != null) {
+            currentInteractable.Interact();
         }
     }
 
@@ -59,14 +71,22 @@ public class Character : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Chest")) {
-            chest = other.GetComponent<Chest>();
+        if (other.CompareTag("Interactable")) {
+            currentInteractable = other.GetComponent<Interactable>();
         }
+
+        // // Version alternative
+        // Interactable interactable = other.GetComponent<Interactable>();
+        // if (interactable != null) {
+        //     currentInteractable = interactable;
+        // }
+
+
     }
 
     void OnTriggerExit(Collider other) {
-        if (other.CompareTag("Chest")) {
-            chest = null;
+        if (other.CompareTag("Interactable")) {
+            currentInteractable = null;
         }
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Chest : MonoBehaviour
+public class Chest : Interactable
 {
 
     public GameObject content;
@@ -11,7 +11,7 @@ public class Chest : MonoBehaviour
 
     private bool isOpen = false;
 
-    public void Open() {
+    public override void Interact() {
         if (isOpen) return;
         
         Destroy(gameObject, 5f);
