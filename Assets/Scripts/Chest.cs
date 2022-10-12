@@ -11,10 +11,20 @@ public class Chest : MonoBehaviour
 
     void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player")) {
-            Destroy(gameObject, 5f);
-            Instantiate(content, transform.position, transform.rotation);
-            onOpen?.Invoke();
+            other.GetComponent<Character>().chest = this;
         }
+    }
+
+    void OnTriggerExit(Collider other) {
+        if (other.CompareTag("Player")) {
+            other.GetComponent<Character>().chest = null;
+        }
+    }
+
+    public void Open() {
+        Destroy(gameObject, 5f);
+        Instantiate(content, transform.position, transform.rotation);
+        onOpen?.Invoke();
     }
 
 }

@@ -12,6 +12,8 @@ public class Character : MonoBehaviour
 
     private Rigidbody rb;
 
+    public Chest chest;
+
     void Start() {
         actions = new PlayerInputActions();
         moveAction = actions.Player.Move;
@@ -33,8 +35,8 @@ public class Character : MonoBehaviour
     }
 
     public void Activate(InputAction.CallbackContext context) {
-        if (context.performed) {
-            Debug.Log("ACTIVATE!!!!!!!!");
+        if (context.performed && chest != null) {
+            chest.Open();
         }
     }
 
