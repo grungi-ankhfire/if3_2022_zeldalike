@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
+
 
 public class Character : MonoBehaviour
 {
@@ -13,6 +15,18 @@ public class Character : MonoBehaviour
     private Rigidbody rb;
 
     public Chest chest;
+    public TextMeshProUGUI rubyText;
+
+    private int _rupees;
+    public int rupees
+    {
+        get { return _rupees; }
+        set { 
+            _rupees = value;
+            rubyText.text = $"x {_rupees}";
+        }
+    }
+    
 
     void Start() {
         actions = new PlayerInputActions();
