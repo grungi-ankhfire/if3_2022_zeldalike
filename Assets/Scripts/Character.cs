@@ -44,4 +44,16 @@ public class Character : MonoBehaviour
         Debug.Log("Move");
     }
 
+    void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("Chest")) {
+            chest = other.GetComponent<Chest>();
+        }
+    }
+
+    void OnTriggerExit(Collider other) {
+        if (other.CompareTag("Chest")) {
+            chest = null;
+        }
+    }
+
 }
